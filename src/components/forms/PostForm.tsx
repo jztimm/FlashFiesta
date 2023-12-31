@@ -23,9 +23,10 @@ import { useCreatePost } from "@/lib/react-query/queriesAndMutations";
 
 type PostFormProps = {
   post?: Models.Document;
+  action: "Create" | "Update";
 };
 
-const PostForm = ({ post }: PostFormProps) => {
+const PostForm = ({ post, action }: PostFormProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useUserContext();
@@ -59,6 +60,8 @@ const PostForm = ({ post }: PostFormProps) => {
     }
     navigate("/");
   };
+
+  console.log(post?.imageUrl);
 
   return (
     <Form {...form}>
