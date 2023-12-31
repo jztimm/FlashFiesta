@@ -19,7 +19,11 @@ import { PostValidation } from "@/lib/validation";
 import { useToast } from "../ui/use-toast";
 import { useUserContext } from "@/context/AuthContext";
 import FileUploader from "../shared/FileUploader";
-import { useCreatePost } from "@/lib/react-query/queriesAndMutations";
+import Loader from "../shared/Loader";
+import {
+  useCreatePost,
+  useUpdatePost,
+} from "@/lib/react-query/queriesAndMutations";
 
 type PostFormProps = {
   post?: Models.Document;
@@ -30,8 +34,6 @@ const PostForm = ({ post, action }: PostFormProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useUserContext();
-
-  // 1. Define your form.
   const form = useForm<z.infer<typeof PostValidation>>({
     resolver: zodResolver(PostValidation),
     defaultValues: {
@@ -45,9 +47,29 @@ const PostForm = ({ post, action }: PostFormProps) => {
   // Query
   const { mutateAsync: createPost, isLoading: isLoadingCreate } =
     useCreatePost();
+  const { mutateAsync: updatePost, isLoading: isLoadingUpdate } =
+    useUpdatePost();
 
-  // 2. Define a submit handler.
+  // Handler
   const handleSubmit = async (value: z.infer<typeof PostValidation>) => {
+    // ACTION = UPDATE
+    if (post && action === "Update") {
+      const updatedPost = await updatePost({
+        ...value,
+        postId: post.$id,
+        imageId: post.imageId,
+        imageUrl: post.imageUrl,
+      });
+
+      if (!updatedPost) {
+        toast({
+          title: `${action} post failed. Please try again.`,
+        });
+      }
+      return navigate(`/posts/${post.$id}`);
+    }
+
+    // ACTION = CREATE
     const newPost = await createPost({
       ...value,
       userId: user.id,
@@ -55,19 +77,17 @@ const PostForm = ({ post, action }: PostFormProps) => {
 
     if (!newPost) {
       toast({
-        title: "Please try again",
+        title: `${action} post failed. Please try again.`,
       });
     }
     navigate("/");
   };
 
-  console.log(post?.imageUrl);
-
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="flex flex-col gap-9 w-full max-w-5xl"
+        className="flex flex-col gap-9 w-full  max-w-5xl"
       >
         <FormField
           control={form.control}
@@ -123,13 +143,13 @@ const PostForm = ({ post, action }: PostFormProps) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="shad-form_label">
-                Add Tags (Seperated by comma " , ")
+                Add Tags (separated by comma " , ")
               </FormLabel>
               <FormControl>
                 <Input
+                  placeholder="Art, Expression, Learn"
                   type="text"
                   className="shad-input"
-                  placeholder="Art, Expression, Learn"
                   {...field}
                 />
               </FormControl>
@@ -149,8 +169,10 @@ const PostForm = ({ post, action }: PostFormProps) => {
           <Button
             type="submit"
             className="shad-button_primary whitespace-nowrap"
+            disabled={isLoadingCreate || isLoadingUpdate}
           >
-            Post
+            {(isLoadingCreate || isLoadingUpdate) && <Loader />}
+            {action} Post
           </Button>
         </div>
       </form>
