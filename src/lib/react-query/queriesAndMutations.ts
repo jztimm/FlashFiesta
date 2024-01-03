@@ -3,6 +3,7 @@ import {
   useMutation,
   useQueryClient,
   useInfiniteQuery,
+  UseMutationResult,
 } from "@tanstack/react-query";
 
 import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
@@ -12,7 +13,7 @@ import {
   deletePost,
   deleteSavedPost,
   getCurrentUser,
-  getInfintePosts,
+  getInfinitePosts,
   getPostById,
   getRecentPosts,
   likePost,
@@ -31,14 +32,21 @@ import { INewPost, INewUser, IUpdatePost } from "@/types";
 export const useCreateUserAccount = () => {
   return useMutation({
     mutationFn: (user: INewUser) => createUserAccount(user),
-  });
+  }) as UseMutationResult<
+    ReturnType<typeof createUserAccount>,
+    Error,
+    INewUser,
+    unknown
+  > & { isLoading: boolean };
 };
 
 export const useSignInAccount = () => {
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: (user: { email: string; password: string }) =>
       signInAccount(user),
   });
+
+  return { ...mutation, isLoading: mutation.isPending };
 };
 
 export const useSignOutAccount = () => {
@@ -183,11 +191,12 @@ export const useDeletePost = () => {
 export const useGetPosts = () => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-    queryFn: getInfintePosts,
+    queryFn: getInfinitePosts,
     getNextPageParam: (lastPage) => {
+      // Assuming 'lastPage' returns an object with a cursor or ID as a number
       if (lastPage && lastPage.documents.length === 0) return null;
 
-      const lastId = lastPage.documents[lastPage?.documents.length - 1].$id;
+      const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
 
       return lastId;
     },
