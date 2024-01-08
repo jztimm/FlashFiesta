@@ -1,6 +1,6 @@
 import { Models } from "appwrite";
 import Loader from "./Loader";
-import GridPostList from "./GridPostList";
+// import GridPostList from "./GridPostList";
 
 type SearchResultsProps = {
   isSearchFetching: boolean;
@@ -9,15 +9,15 @@ type SearchResultsProps = {
 
 const SearchResults = ({
   isSearchFetching,
-  searchedPosts,
-}: SearchResultsProps) => {
+}: // searchedPosts,
+SearchResultsProps) => {
   // While fetching, render loader
   if (isSearchFetching) return <Loader />;
 
   // If searchedPosts is not empty, then show searched posts
-  if (searchedPosts && searchedPosts.documents.length > 0) {
-    return <GridPostList posts={searchedPosts.documents} />;
-  }
+  // if (searchedPosts && searchedPosts.documents.length > 0) {
+  //   return <GridPostList posts={searchedPosts.documents} />;
+  // }
 
   // If no searchPosts found, then show "No results found"
   return (
