@@ -15,10 +15,12 @@ const GridPostList = ({
   showUser = true,
   showStats = true,
 }: GridPostListProps) => {
+  // Get User
   const { user } = useUserContext();
 
   return (
     <ul className="grid-container">
+      {/* Post Image */}
       {posts.map((post) => (
         <li key={post.$id} className="relative min-w-80 h-80">
           <Link to={`/posts/${post.$id}`} className="grid-post_link">
@@ -29,6 +31,7 @@ const GridPostList = ({
             />
           </Link>
 
+          {/* User Info */}
           <div className="grid-post_user">
             {showUser && (
               <div className="flex items-center justify-start gap-2 flex-1">

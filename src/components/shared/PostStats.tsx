@@ -7,7 +7,7 @@ import {
 } from "@/lib/react-query/queriesAndMutations";
 import { Models } from "appwrite";
 import { checkIsLiked } from "@/lib/utils";
-import { deleteSavedPost, savePost } from "@/lib/appwrite/api";
+// import { deleteSavedPost, savePost } from "@/lib/appwrite/api";
 import Loader from "./Loader";
 
 type PostStatsProps = {

@@ -15,18 +15,20 @@ const Explore = () => {
   const { ref, inView } = useInView();
   const { data: posts, fetchNextPage, hasNextPage } = useGetPosts();
 
+  // Search
   const [searchValue, setSearchValue] = useState("");
-
   const debouncedValue = useDebounce(searchValue, 500);
   const { data: searchedPosts, isFetching: isSearchFetching } =
     useSearchPosts(debouncedValue);
 
+  // When in and no search value, fetch next page
   useEffect(() => {
     if (inView && !searchValue) {
       fetchNextPage();
     }
   }, [inView, searchValue]);
 
+  // Check if there are no posts
   if (!posts) {
     return (
       <div className="flex-center w-full h-full">
@@ -35,10 +37,11 @@ const Explore = () => {
     );
   }
 
+  // Show searched posts
   const shouldShowSearchResults = searchValue !== "";
   const shouldShowPosts =
     !shouldShowSearchResults &&
-    posts.pages.every((item) => item.documents.length === 0);
+    posts.pages.every((item) => item?.documents.length === 0);
 
   return (
     <div className="explore-container">
