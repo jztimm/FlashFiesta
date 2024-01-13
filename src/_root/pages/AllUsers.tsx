@@ -1,5 +1,7 @@
+import ComingSoon from "@/components/ComingSoon";
+
 const AllUsers = () => {
-  return <div>AllUsers</div>;
+  return <ComingSoon />;
 };
 
 export default AllUsers;

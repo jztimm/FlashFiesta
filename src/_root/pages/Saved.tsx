@@ -1,5 +1,7 @@
+import ComingSoon from "@/components/ComingSoon";
+
 const Saved = () => {
-  return <div>Saved</div>;
+  return <ComingSoon />;
 };
 
 export default Saved;

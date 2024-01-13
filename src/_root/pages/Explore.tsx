@@ -9,6 +9,8 @@
 // } from "@/lib/react-query/queriesAndMutations";
 // import { useEffect, useState } from "react";
 
+import ComingSoon from "@/components/ComingSoon";
+
 // import { useInView } from "react-intersection-observer";
 
 // const Explore = () => {
@@ -106,7 +108,7 @@
 // export default Explore;
 
 const Explore = () => {
-  return <div>Explore</div>;
+  return <ComingSoon />;
 };
 
 export default Explore;
